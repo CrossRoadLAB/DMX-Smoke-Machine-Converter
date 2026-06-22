@@ -1,4 +1,4 @@
-# DMX Smoke Machine Converter/Controller 🌫️
+# DMX Smoke Machine Converter/Controller
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![Platform](https://img.shields.io/badge/platform-ESP32--C3-lightgrey.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Un modulo hardware/software progettato per trasformare una comune macchina del fumo RF (Radio Frequenza) economica in un affidabile nodo DMX professionale, pronto per il palco. 
@@ -66,6 +66,11 @@ Carica lo sketch contenuto nel file `.ino` selezionando la scheda **ESP32C3 Dev 
 * *USB CDC On Boot:* **Enabled**
 * *Flash Size:* **4MB**
 * *Partition Scheme:* **Default 4MB with spiffs**
+
+Wifi impostazioni di default:
+* **SSID**: SMOKE_MACHINE
+* **PSWD**: smoke123
+[](docs/Settings.png)
 
 ---
 
