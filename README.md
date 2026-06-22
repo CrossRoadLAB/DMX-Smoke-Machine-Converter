@@ -40,7 +40,7 @@ Assicurarsi di includere le immagini esportate dal CAD nella cartella del proget
 * Schema elettrico: ![Schema](docs/Smoke-machine-DMX-converter.png)`
 * Layout/Render PCB: ![PCB Layout top](docs/top.png)
 ![PCB Layout top](docs/bottom.png)
-* Modello 3D: [![Clicca qui per esplorare il modello 3D](docs/poster.png)](docs/3D_PCB_Smoke-machine-DMX-converter.glb)
+* Modello 3D: [![Clicca qui per esplorare il modello 3D](docs/poster.png)](https://kroscloud.com/3d/DMX-Smoke-Machine-Converter_Controller/h813?l=1)
 ---
 
 ## 🖥️ Requisiti Software e Librerie
