@@ -37,9 +37,10 @@ Nato per sopravvivere ai ground loop, agli sbalzi di tensione e alle vibrazioni 
 Il circuito prevede due domini di massa rigorosamente separati: la linea pulita (ESP32/MAX485) e la linea sporca (Macchina del fumo).
 
 Assicurarsi di includere le immagini esportate dal CAD nella cartella del progetto (es. `docs/`):
-* Schema elettrico: `![Schematico](docs/schematic.png)`
-* Layout/Render PCB: `![PCB Layout](docs/pcb_render.png)`
-
+* Schema elettrico: ![Schema](docs/Smoke-machine-DMX-converter.png)`
+* Layout/Render PCB: ![PCB Layout top](docs/top.svg)
+                     ![PCB Layout top](docs/bottom.svg)
+*[![Clicca qui per esplorare il modello 3D](docs/screenshot_del_modello.png)](docs/nome_del_tuo_modello.glb)
 ---
 
 ## 🖥️ Requisiti Software e Librerie
