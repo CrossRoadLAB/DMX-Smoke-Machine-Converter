@@ -67,10 +67,11 @@ Carica lo sketch contenuto nel file `.ino` selezionando la scheda **ESP32C3 Dev 
 * *Flash Size:* **4MB**
 * *Partition Scheme:* **Default 4MB with spiffs**
 
-Wifi impostazioni di default:
+Impostazioni di default del WIFI:
 * **SSID**: SMOKE_MACHINE
 * **PSWD**: smoke123
-[](docs/Settings.png)
+
+![](docs/Settings.png)
 
 ---
 
