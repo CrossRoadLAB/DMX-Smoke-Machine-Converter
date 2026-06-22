@@ -66,3 +66,9 @@ Carica lo sketch contenuto nel file `.ino` selezionando la scheda **ESP32C3 Dev 
 * *USB CDC On Boot:* **Enabled**
 * *Flash Size:* **4MB**
 * *Partition Scheme:* **Default 4MB with spiffs**
+
+---
+
+## 📡 Sniffare i codici del telecomado
+
+Per fare lo sniffing dei codici del telecomando consiglio di seguire questo progetto: [Link del progetto di Bocaletto Luca](https://github.com/bocaletto-luca/RF-Sniffer-Replayer)
