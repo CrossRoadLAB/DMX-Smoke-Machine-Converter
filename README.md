@@ -38,9 +38,9 @@ Il circuito prevede due domini di massa rigorosamente separati: la linea pulita 
 
 Assicurarsi di includere le immagini esportate dal CAD nella cartella del progetto (es. `docs/`):
 * Schema elettrico: ![Schema](docs/Smoke-machine-DMX-converter.png)`
-* Layout/Render PCB: ![PCB Layout top](docs/top.svg)
-                     ![PCB Layout top](docs/bottom.svg)
-*[![Clicca qui per esplorare il modello 3D](docs/screenshot_del_modello.png)](docs/nome_del_tuo_modello.glb)
+* Layout/Render PCB: ![PCB Layout top](docs/top.png)
+![PCB Layout top](docs/bottom.png)
+*Modello 3D: [![Clicca qui per esplorare il modello 3D](docs/poster.png)](docs/3D_PCB_Smoke-machine-DMX-converter.glb)
 ---
 
 ## 🖥️ Requisiti Software e Librerie
