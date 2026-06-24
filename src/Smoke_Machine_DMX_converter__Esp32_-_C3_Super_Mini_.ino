@@ -2,7 +2,7 @@
 #include <ESPAsyncWebServer.h>
 #include <Preferences.h>
 #include <DNSServer.h>
-#include <esp_dmx.h>  
+#include <esp_dmx.h>
 #include <RCSwitch.h>
 
 // --- PINOUT ---
@@ -29,11 +29,15 @@ String wifiSSID;
 String wifiPASS;
 String language; // "IT" o "EN"
 
-// --- CODICI TELECOMANDO ---
-const unsigned long CODICE_FUMO   = 1234567; 
-const unsigned long CODICE_ROSSO  = 1234568;
-const unsigned long CODICE_VERDE  = 1234569;
-const unsigned long CODICE_BLU    = 1234570;
+// --- VARIABILE DI STATO PER EVITARE SPAM RADIO ---
+bool fumoAttivo = false;
+
+// --- CODICI TELECOMANDO --- (Sostituire con i valori reali del telecomando)
+const unsigned long CODICE_FUMO     = 1234567;
+const unsigned long CODICE_FUMO_OFF = 7654321;
+const unsigned long CODICE_ROSSO    = 1234568;
+const unsigned long CODICE_VERDE    = 1234569;
+const unsigned long CODICE_BLU      = 1234570;
 const int BIT_LENGTH = 24; 
 const int PROTOCOLO  = 1;  
 
@@ -150,7 +154,7 @@ void setup() {
         }
         if (request->hasParam("pass")) {
             String tempPass = request->getParam("pass")->value();
-            if(tempPass.length() >= 8 || tempPass.length() == 0) { // La pass WPA2 deve essere min 8 o vuota
+            if(tempPass.length() >= 8 || tempPass.length() == 0) {
                 wifiPASS = tempPass;
                 preferences.putString("pass", wifiPASS);
             }
@@ -169,13 +173,13 @@ void setup() {
         request->redirect("/");
     });
 
-    // GESTIONE CAPTIVE PORTAL: Se il dispositivo cerca di visitare google.com, rimandalo alla root
+    // GESTIONE CAPTIVE PORTAL: Se il dispositivo cerca di visitare un sito, rimandalo alla root
     server.onNotFound([](AsyncWebServerRequest *request){
         request->redirect("/");
     });
 
     server.begin();
-    digitalWrite(LED_ONBOARD, HIGH); // Spegni LED fine boot
+    digitalWrite(LED_ONBOARD, HIGH); // Segnala fine boot (acceso)
 }
 
 void loop() {
@@ -186,19 +190,36 @@ void loop() {
     if (dmx_receive(dmx_num, &packet, 0)) {
         if (packet.err == DMX_OK) {
             lastDmxPacketTime = millis(); 
-            digitalWrite(LED_ONBOARD, LOW); // LED Segnale OK
+            digitalWrite(LED_ONBOARD, LOW); // LED acceso a indicare segnale DMX valido ricevuto
             
             dmx_read(dmx_num, dmx_data, packet.size);
             
-            int valFumo  = dmx_data[dmxBaseAddress];     
-            int valRosso = dmx_data[dmxBaseAddress + 1]; 
-            int valVerde = dmx_data[dmxBaseAddress + 2]; 
-            int valBlu   = dmx_data[dmxBaseAddress + 3]; 
+            // L'indirizzo DMX 1 corrisponde all'indice 0 dell'array (zero-based indexing)
+            int dmxIndex = dmxBaseAddress - 1;
 
+            int valFumo  = dmx_data[dmxIndex];      
+            int valRosso = dmx_data[dmxIndex + 1]; 
+            int valVerde = dmx_data[dmxIndex + 2]; 
+            int valBlu   = dmx_data[dmxIndex + 3]; 
+
+            // --- GESTIONE FUMO CON RILASCIO AUTOMATICO ---
             if (valFumo > 128) {
-                mySwitch.send(CODICE_FUMO, BIT_LENGTH);
-                delay(20); 
+                if (!fumoAttivo) {
+                    mySwitch.send(CODICE_FUMO, BIT_LENGTH);
+                    fumoAttivo = true; // Salva lo stato "acceso"
+                    delay(50); // Piccolo delay per garantire l'invio
+                }
+                // Se la tua macchina ha bisogno che il segnale ON venga ripetuto per restare accesa, 
+                // sposta `mySwitch.send` fuori dall'if (!fumoAttivo) ma mantieni un piccolo delay.
+            } else {
+                if (fumoAttivo) {
+                    mySwitch.send(CODICE_FUMO_OFF, BIT_LENGTH);
+                    fumoAttivo = false; // Salva lo stato "spento"
+                    delay(50);
+                }
             }
+
+            // --- GESTIONE COLORI ---
             if (valRosso > 128) {
                 mySwitch.send(CODICE_ROSSO, BIT_LENGTH);
                 delay(20);
@@ -212,6 +233,7 @@ void loop() {
         }
     }
     
+    // Se non ricevi pacchetti DMX per più di 1 secondo, accendi fisso il LED
     if (millis() - lastDmxPacketTime > 1000) {
         digitalWrite(LED_ONBOARD, HIGH); // Nessun segnale
     }
