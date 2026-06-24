@@ -35,8 +35,7 @@ Nato per sopravvivere ai ground loop, agli sbalzi di tensione e alle vibrazioni 
 ## 🛠️ Schema Elettrico e Design PCB
 
 Il circuito prevede due domini di massa rigorosamente separati: la linea pulita (ESP32/MAX485) e la linea sporca (Macchina del fumo).
-
-Assicurarsi di includere le immagini esportate dal CAD nella cartella del progetto (es. `docs/`):
+PS. I pin GND, DATA e 5V devono essere collegati al posto del ricevitore RF della macchina del fumo.
 * Schema elettrico: ![Schema](docs/Smoke-machine-DMX-converter.png)`
 * Layout/Render PCB: ![PCB Layout top](docs/top.png)
 ![PCB Layout top](docs/bottom.png)
