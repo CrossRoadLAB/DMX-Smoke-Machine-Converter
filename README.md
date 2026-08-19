@@ -36,7 +36,7 @@ Nato per sopravvivere ai ground loop, agli sbalzi di tensione e alle vibrazioni 
 
 Il circuito prevede due domini di massa rigorosamente separati: la linea pulita (ESP32/MAX485) e la linea sporca (Macchina del fumo).
 PS. I pin GND, DATA e 5V devono essere collegati al posto del ricevitore RF della macchina del fumo.
-* Schema elettrico: ![Schema](docs/Smoke-machine-DMX-converter.png)`
+* Schema elettrico: ![Schema](docs/Smoke-machine-DMX-Converter.png)`
 * Layout/Render PCB: ![PCB Layout top](docs/top.png)
 ![PCB Layout top](docs/bottom.png)
 * Modello 3D (clicca l'immagine per visualizzare il modello): [![Clicca qui per esplorare il modello 3D](docs/poster.png)](https://kroscloud.com/3d/DMX-Smoke-Machine-Converter_Controller/h813?l=1)
