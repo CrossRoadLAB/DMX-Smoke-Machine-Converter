@@ -1,78 +1,79 @@
 # DMX Smoke Machine Converter/Controller
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![Platform](https://img.shields.io/badge/platform-ESP32--C3-lightgrey.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-Un modulo hardware/software progettato per trasformare una comune macchina del fumo RF (Radio Frequenza) economica in un affidabile nodo DMX professionale, pronto per il palco. 
+A hardware/software module designed to transform a standard, cheap RF (Radio Frequency) smoke machine into a reliable, stage-ready professional DMX node. 
 
-Nato per sopravvivere ai ground loop, agli sbalzi di tensione e alle vibrazioni estreme tipiche dei set live, questo controller isola galvanicamente la logica di controllo dal circuito di potenza della macchina, garantendo zero interferenze sulla catena luci. Include un'interfaccia web ad alto contrasto (stile raw/monospace) accessibile tramite Captive Portal per il setup istantaneo durante i cambi palco.
+Built to survive ground loops, voltage spikes, and extreme vibrations typical of live sets, this controller galvanically isolates the control logic from the machine's power circuit, ensuring zero interference on the lighting chain. It includes a high-contrast web interface (raw/monospace style) accessible via Captive Portal for instant setup during stage changeovers.
 
 ---
 
-## 🎛️ Feature Principali
-* **Isolamento Galvanico Totale:** Grazie al convertitore DC-DC isolato B0505S-1W e all'optoisolatore ad alta velocità 6N137, le masse della macchina del fumo e del bus DMX non si toccano mai. Addio rumori di linea.
-* **Ricezione DMX Hardware:** Sfrutta gli interrupt nativi dell'ESP32 e la libreria `esp_dmx` per una ricezione del segnale granitica e non-bloccante.
-* **Terminatore DMX Escludibile:** Jumper integrato sul PCB per attivare la resistenza di terminazione da 120Ω se la macchina è l'ultimo anello della catena.
-* **Captive Portal UI:** Nessun IP da ricordare. Collegati al Wi-Fi del modulo con lo smartphone e l'interfaccia di setup si aprirà automaticamente (stile login degli hotel).
-* **Configurazione Persistente:** Il canale DMX, il nome del Wi-Fi, la password e la lingua (IT/EN) vengono salvati nella memoria Flash permanente (NVS).
+## 🎛️ Main Features
+* **Total Galvanic Isolation:** Thanks to the B0505S-1W isolated DC-DC converter and the 6N137 high-speed optoisolator, the grounds of the smoke machine and the DMX bus never touch. Say goodbye to line noise.
+* **Hardware DMX Reception:** Leverages the ESP32's native interrupts and the `esp_dmx` library for rock-solid, non-blocking signal reception.
+* **Switchable DMX Terminator:** Onboard PCB jumper to activate the 120Ω termination resistor if the machine is the last link in the chain.
+* **Captive Portal UI:** No IP addresses to remember. Connect to the module's Wi-Fi with your smartphone, and the setup interface will pop up automatically (like a hotel login).
+* **Persistent Configuration:** The DMX channel, Wi-Fi SSID, password, and language (IT/EN) are saved in the permanent Flash memory (NVS).
 
 ---
 
 ## 🔌 Bill of Materials (BOM)
 
-| Componente | Quantità | Designator | Descrizione / Ruolo |
+| Component | Quantity | Designator | Description / Role |
 | :--- | :---: | :---: | :--- |
-| **ESP32-C3 SuperMini** | 1 | U1 | Microcontrollore RISC-V con Wi-Fi (Logica principale e Web Server) |
-| **MAX3485** | 1 | U3 | Transceiver RS-485 nativo a 3.3V (Lettura bus DMX) |
-| **HT-6N137** | 1 | U4 | Optoisolatore High-Speed (Separazione ottica segnale DATA) |
-| **B0505S-1WL** | 1 | U5 | Convertitore DC-DC isolato (Ingresso 5V sporchi / Uscita 5V puliti isolati) |
-| **CN3903 DC-DC Buck 5V** | 1 | U8 | Modulo convertitore Step-Down (Abbassa i 12V della macchina a 5V) |
-| **Connettore XLR-09W-P 3-Pin** | 1 | U2 | Maschio da PCB (Ingresso segnale DMX) |
-| **JST XH 2-Pin (Passo 2.54mm)** | 1 | U6 | Ingresso alimentazione (12V e GND dalla scheda madre della macchina) |
-| **JST XH 3-Pin (Passo 2.54mm)** | 1 | U7 | Uscita comando verso la macchina del fumo (5V, DATA, GND) |
-| **Resistenza 220Ω** | 1 | R2 | Limitatore di corrente per il LED dell'optoisolatore |
-| **Resistenza 1kΩ** | 1 | R1 | Protezione linea RX dell'ESP32 |
-| **Resistenza 4.7kΩ** | 1 | R3 | Pull-up per la linea DATA (Lato macchina) |
-| **Resistenza 120Ω** | 1 | R4 | Terminazione bus DMX |
-| **Condensatore 100nF (0.1µF)** | 2 | C1, C2 | Condensatori di disaccoppiamento (su MAX3485 e uscita Buck) |
-| **Pin Header 1x2 (Passo 2.54mm)** | 1 | P1 | Header maschio per blocco terminazione DMX |
-| **Jumper Cap (Passo 2.54mm)** | 1 | - | Cappuccio per chiudere il ponticello su P1 (Attiva resistenza 120Ω) |
+| **ESP32-C3 SuperMini** | 1 | U1 | RISC-V Microcontroller with Wi-Fi (Main logic and Web Server) |
+| **MAX3485** | 1 | U3 | Native 3.3V RS-485 Transceiver (DMX bus reading) |
+| **HT-6N137** | 1 | U4 | High-Speed Optoisolator (Optical separation of the DATA signal) |
+| **B0505S-1WL** | 1 | U5 | Isolated DC-DC Converter ("Dirty" 5V Input / Isolated "clean" 5V Output) |
+| **CN3903 DC-DC Buck 5V** | 1 | U8 | Step-Down Converter Module (Steps down the 12V from the machine to 5V) |
+| **XLR-09W-P 3-Pin Connector** | 1 | U2 | PCB Mount Male (DMX signal input) |
+| **JST XH 2-Pin (2.54mm pitch)** | 1 | U6 | Power input (12V and GND from the machine's motherboard) |
+| **JST XH 3-Pin (2.54mm pitch)** | 1 | U7 | Command output to the smoke machine (5V, DATA, GND) |
+| **220Ω Resistor** | 1 | R2 | Current limiting resistor for the optoisolator LED |
+| **1kΩ Resistor** | 1 | R1 | Protection for the ESP32 RX line |
+| **4.7kΩ Resistor** | 1 | R3 | Pull-up for the DATA line (Machine side) |
+| **120Ω Resistor** | 1 | R4 | DMX bus termination |
+| **100nF (0.1µF) Capacitor** | 2 | C1, C2 | Decoupling capacitors (on MAX3485 and Buck output) |
+| **1x2 Pin Header (2.54mm pitch)** | 1 | P1 | Male header for DMX termination block |
+| **Jumper Cap (2.54mm pitch)** | 1 | - | Cap to close the jumper on P1 (Activates the 120Ω resistor) |
 
 ---
 
-## 🛠️ Schema Elettrico e Design PCB
+## 🛠️ Schematic and PCB Design
 
-Il circuito prevede due domini di massa rigorosamente separati: la linea pulita (ESP32/MAX485) e la linea sporca (Macchina del fumo).
-PS. I pin GND, DATA e 5V devono essere collegati al posto del ricevitore RF della macchina del fumo.
-* Schema elettrico: ![Schema](docs/Smoke-machine-DMX-Converter.png)`
-* Layout/Render PCB: ![PCB Layout top](docs/top.png)
-![PCB Layout top](docs/bottom.png)
-* Modello 3D (clicca l'immagine per visualizzare il modello): [![Clicca qui per esplorare il modello 3D](docs/poster.png)](https://kroscloud.com/3d/DMX-Smoke-Machine-Converter_Controller/h813?l=1)
+The circuit features two strictly separated ground domains: the clean line (ESP32/MAX485) and the dirty line (Smoke machine).
+*P.S. The GND, DATA, and 5V pins must be connected in place of the smoke machine's RF receiver.*
+* Schematic: ![Schematic](docs/Smoke-machine-DMX-Converter.png)
+* PCB Layout/Render: ![PCB Layout top](docs/top.png)
+![PCB Layout bottom](docs/bottom.png)
+* 3D Model (click the image to view the model): [![Click here to explore the 3D model](docs/poster.png)](https://kroscloud.com/3d/DMX-Smoke-Machine-Converter_Controller/h813?l=1)
+
 ---
 
-## 🖥️ Requisiti Software e Librerie
+## 🖥️ Software Requirements and Libraries
 
-⚠️ **ATTENZIONE FONDAMENTALE:** A causa delle modifiche recenti nell'ESP-IDF di Espressif, per compilare con successo la libreria DMX è necessario effettuare un downgrade del core ESP32 nel Gestore Schede dell'IDE di Arduino.
+⚠️ **CRITICAL WARNING:** Due to recent changes in Espressif's ESP-IDF, to successfully compile the DMX library, you must downgrade the ESP32 core in the Arduino IDE Boards Manager.
 
-1. Apri il Gestore Schede dell'IDE di Arduino.
-2. Cerca `esp32` by Espressif Systems.
-3. Seleziona e installa la versione **`2.0.17`**.
+1. Open the Arduino IDE Boards Manager.
+2. Search for `esp32` by Espressif Systems.
+3. Select and install version **`2.0.17`**.
 
-**Librerie Esterne Richieste (installabili dal Library Manager):**
+**Required External Libraries (installable via Library Manager):**
 * `esp_dmx` (v4.1) by Mitch Weisbrod (someweisguy)
 * `ESPAsyncWebServer` by me-no-dev
 * `rc-switch` by sui77
-* `Preferences` (inclusa nel core ESP32)
-* `DNSServer` (inclusa nel core ESP32)
+* `Preferences` (included in the ESP32 core)
+* `DNSServer` (included in the ESP32 core)
 
 ---
 
-## 💻 Il Firmware
+## 💻 The Firmware
 
-Carica lo sketch contenuto nel file `.ino` selezionando la scheda **ESP32C3 Dev Module** con le seguenti opzioni attive nel menù Strumenti:
+Upload the sketch contained in the `.ino` file by selecting the **ESP32C3 Dev Module** board with the following options enabled in the Tools menu:
 * *USB CDC On Boot:* **Enabled**
 * *Flash Size:* **4MB**
 * *Partition Scheme:* **Default 4MB with spiffs**
 
-Impostazioni di default del WIFI:
+Default WIFI Settings:
 * **SSID**: SMOKE_MACHINE
 * **PSWD**: smoke123
 
@@ -80,6 +81,6 @@ Impostazioni di default del WIFI:
 
 ---
 
-## 📡 Sniffare i codici del telecomado
+## 📡 Sniffing the remote control codes
 
-Per fare lo sniffing dei codici del telecomando consiglio di seguire questo progetto: [Link del progetto di Bocaletto Luca](https://github.com/bocaletto-luca/RF-Sniffer-Replayer)
+To sniff the RF remote control codes, I recommend following this project: [Luca Bocaletto's Project Link](https://github.com/bocaletto-luca/RF-Sniffer-Replayer)
