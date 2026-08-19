@@ -15,7 +15,7 @@ dmx_port_t dmx_num = DMX_NUM_1;
 uint8_t dmx_data[DMX_PACKET_SIZE_MAX];
 unsigned long lastDmxPacketTime = 0;
 
-// --- OGGETTI DI RETE ---
+// --- NETWORK OBJECTS ---
 AsyncWebServer server(80);
 DNSServer dnsServer;
 Preferences preferences;
@@ -23,13 +23,13 @@ RCSwitch mySwitch = RCSwitch();
 
 const byte DNS_PORT = 53;
 
-// --- VARIABILI DI STATO E MEMORIA ---
+// --- STATE AND MEMORY VARIABLES ---
 int dmxBaseAddress = 1;
 String wifiSSID;
 String wifiPASS;
-String language; // "IT" o "EN"
+String language; // "IT" or "EN"
 
-// --- VARIABILI DI STATO PER EVITARE SPAM RADIO ---
+// --- STATE VARIABLES TO PREVENT RF SPAM ---
 bool fumoAttivo = false;
 bool lightOffAttivo = false;
 bool rossoAttivo = false;
@@ -37,7 +37,7 @@ bool verdeAttivo = false;
 bool bluAttivo = false;
 bool stroboAttivo = false;
 
-// --- CODICI TELECOMANDO REALI --- 
+// --- REAL REMOTE CONTROL CODES --- 
 const unsigned long CODICE_FUMO      = 1469186558;
 const unsigned long CODICE_FUMO_OFF  = 1469187068;
 const unsigned long CODICE_ROSSO     = 1469187323;
@@ -49,7 +49,7 @@ const unsigned long CODICE_LIGHT_OFF = 1469195483;
 const int BIT_LENGTH = 32; 
 const int PROTOCOLO  = 1;  
 
-// --- FUNZIONE DI GENERAZIONE HTML ---
+// --- HTML GENERATION FUNCTION ---
 String buildHTML() {
     bool isIT = (language == "IT");
     
@@ -76,7 +76,7 @@ String buildHTML() {
     html += "<div class=\"container\">";
     html += "<h1>" + t_title + "</h1>";
     
-    // SEZIONE DMX
+    // DMX SECTION
     html += "<p><strong>" + t_dmx_lbl + "</strong></p>";
     html += "<div class=\"val\">" + String(dmxBaseAddress) + "</div>";
     html += "<form action=\"/set-dmx\" method=\"GET\">";
@@ -84,7 +84,7 @@ String buildHTML() {
     html += "<button type=\"submit\">" + t_btn_save + "</button>";
     html += "</form>";
 
-    // SEZIONE WI-FI
+    // WI-FI SECTION
     html += "<h2>" + t_wifi_lbl + "</h2>";
     html += "<form action=\"/set-wifi\" method=\"GET\">";
     html += "<input type=\"text\" name=\"ssid\" placeholder=\"SSID Name\" value=\"" + wifiSSID + "\" required>";
@@ -92,7 +92,7 @@ String buildHTML() {
     html += "<button type=\"submit\">" + t_btn_wifi + "</button>";
     html += "</form>";
 
-    // SEZIONE LINGUA
+    // LANGUAGE SECTION
     html += "<h2>" + t_lang_lbl + "</h2>";
     html += "<form action=\"/set-lang\" method=\"GET\">";
     html += "<button class=\"lang-btn\" type=\"submit\" name=\"l\" value=\"IT\" " + String(isIT ? "style='background:#ccc;color:#000;'" : "") + ">ITALIANO</button> ";
@@ -104,11 +104,11 @@ String buildHTML() {
 }
 
 void setup() {
-    // Inizializzazione Seriale a 115200 baud
+    // Initialize Serial at 115200 baud
     Serial.begin(115200);
     delay(500);
     Serial.println("\n\n====================================");
-    Serial.println("  DMX to RF Converter Inizializzato ");
+    Serial.println("  DMX to RF Converter Initialized   ");
     Serial.println("====================================");
 
     pinMode(LED_ONBOARD, OUTPUT);
@@ -119,30 +119,30 @@ void setup() {
     mySwitch.enableTransmit(PIN_6N137_TRIGGER);
     mySwitch.setProtocol(PROTOCOLO);
 
-    // --- CARICAMENTO MEMORIA ---
+    // --- MEMORY LOADING ---
     preferences.begin("fogger-cfg", false);
     dmxBaseAddress = preferences.getInt("dmx", 1);
     wifiSSID = preferences.getString("ssid", "SMOKE_MACHINE");
     wifiPASS = preferences.getString("pass", "smoke123");
     language = preferences.getString("lang", "IT");
 
-    Serial.print("Canale DMX Base: ");
+    Serial.print("Base DMX Channel: ");
     Serial.println(dmxBaseAddress);
-    Serial.print("Rete Wi-Fi AP: ");
+    Serial.print("Wi-Fi AP Network: ");
     Serial.println(wifiSSID);
 
-    // --- SETUP DMX ---
+    // --- DMX SETUP ---
     dmx_config_t dmx_config = DMX_CONFIG_DEFAULT;
     dmx_personality_t personalities[] = { {6, "Fogger RGB 6CH"} }; 
     dmx_driver_install(dmx_num, &dmx_config, personalities, 1);
     dmx_set_pin(dmx_num, -1, DMX_RX_PIN, -1); 
 
-    // --- SETUP WI-FI E CAPTIVE PORTAL ---
+    // --- WI-FI AND CAPTIVE PORTAL SETUP ---
     WiFi.mode(WIFI_AP);
     WiFi.softAP(wifiSSID.c_str(), wifiPASS.c_str());
     dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
 
-    // --- ROTTE WEB SERVER ---
+    // --- WEB SERVER ROUTES ---
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         request->send(200, "text/html", buildHTML());
     });
@@ -153,7 +153,7 @@ void setup() {
             if (newAddr >= 1 && newAddr <= 507) {
                 dmxBaseAddress = newAddr;
                 preferences.putInt("dmx", dmxBaseAddress);
-                Serial.print("! Nuovo Canale DMX Salvato: ");
+                Serial.print("! New DMX Channel Saved: ");
                 Serial.println(dmxBaseAddress);
             }
         }
@@ -191,8 +191,8 @@ void setup() {
     });
 
     server.begin();
-    digitalWrite(LED_ONBOARD, HIGH); // Segnala fine boot (acceso)
-    Serial.println("Server Web Avviato. In attesa di segnale DMX...");
+    digitalWrite(LED_ONBOARD, HIGH); // Signal end of boot (ON)
+    Serial.println("Web Server Started. Waiting for DMX signal...");
 }
 
 void loop() {
@@ -208,7 +208,7 @@ void loop() {
             
             int dmxIndex = dmxBaseAddress;
 
-            // Lettura 6 canali
+            // Reading 6 channels
             int valFumo     = dmx_data[dmxIndex];      
             int valLightOff = dmx_data[dmxIndex + 1]; 
             int valRosso    = dmx_data[dmxIndex + 2]; 
@@ -217,11 +217,11 @@ void loop() {
             int valStrobo   = dmx_data[dmxIndex + 5];
 
             // ==========================================
-            // 1. CANALE 1: FUMO (Push to Hold)
+            // 1. CHANNEL 1: SMOKE (Push to Hold)
             // ==========================================
             if (valFumo > 128) {
                 if (!fumoAttivo) {
-                    Serial.print("[DMX CH1] Fumo ON  -> Trasmetto RF: ");
+                    Serial.print("[DMX CH1] Smoke ON  -> Transmitting RF: ");
                     Serial.println(CODICE_FUMO);
                     mySwitch.send(CODICE_FUMO, BIT_LENGTH);
                     fumoAttivo = true;
@@ -229,7 +229,7 @@ void loop() {
                 }
             } else {
                 if (fumoAttivo) {
-                    Serial.print("[DMX CH1] Fumo OFF -> Trasmetto RF: ");
+                    Serial.print("[DMX CH1] Smoke OFF -> Transmitting RF: ");
                     Serial.println(CODICE_FUMO_OFF);
                     mySwitch.send(CODICE_FUMO_OFF, BIT_LENGTH);
                     fumoAttivo = false;
@@ -238,11 +238,11 @@ void loop() {
             }
 
             // ==========================================
-            // 2. CANALE 2: LUCI OFF (Flash per spegnere)
+            // 2. CHANNEL 2: LIGHTS OFF (Flash to turn off)
             // ==========================================
             if (valLightOff > 128) {
                 if (!lightOffAttivo) {
-                    Serial.print("[DMX CH2] Luci OFF richiesto -> Trasmetto RF: ");
+                    Serial.print("[DMX CH2] Lights OFF requested -> Transmitting RF: ");
                     Serial.println(CODICE_LIGHT_OFF);
                     mySwitch.send(CODICE_LIGHT_OFF, BIT_LENGTH);
                     lightOffAttivo = true;
@@ -253,14 +253,14 @@ void loop() {
             }
 
             // ==========================================
-            // 3/4/5/6. CANALI COLORI E STROBO (Trigger)
+            // 3/4/5/6. COLOR AND STROBE CHANNELS (Trigger)
             // ==========================================
             bool newR = (valRosso > 128);
             bool newG = (valVerde > 128);
             bool newB = (valBlu > 128);
             bool newS = (valStrobo > 128);
 
-            // Verifica se ALMENO UN fader è stato abbassato rispetto al ciclo precedente
+            // Check if AT LEAST ONE fader was lowered compared to the previous cycle
             bool anyLightTurnedOff = false;
             if (rossoAttivo && !newR) anyLightTurnedOff = true;
             if (verdeAttivo && !newG) anyLightTurnedOff = true;
@@ -268,49 +268,49 @@ void loop() {
             if (stroboAttivo && !newS) anyLightTurnedOff = true;
 
             if (anyLightTurnedOff) {
-                Serial.print("[DMX CH3-6] Rilevato spegnimento fader -> Trasmetto GLOBAL OFF: ");
+                Serial.print("[DMX CH3-6] Fader turn off detected -> Transmitting GLOBAL OFF: ");
                 Serial.println(CODICE_LIGHT_OFF);
                 mySwitch.send(CODICE_LIGHT_OFF, BIT_LENGTH);
                 delay(50);
                 
-                // Ricontrolla e riaccende immediatamente le luci che hanno il fader ancora su
+                // Re-check and immediately turn back on the lights that still have the fader up
                 if (newR) { 
-                    Serial.print("   -> Riaccendo ROSSO: "); Serial.println(CODICE_ROSSO);
+                    Serial.print("   -> Turning RED back on: "); Serial.println(CODICE_ROSSO);
                     mySwitch.send(CODICE_ROSSO, BIT_LENGTH); delay(50); 
                 }
                 if (newG) { 
-                    Serial.print("   -> Riaccendo VERDE: "); Serial.println(CODICE_VERDE);
+                    Serial.print("   -> Turning GREEN back on: "); Serial.println(CODICE_VERDE);
                     mySwitch.send(CODICE_VERDE, BIT_LENGTH); delay(50); 
                 }
                 if (newB) { 
-                    Serial.print("   -> Riaccendo BLU: "); Serial.println(CODICE_BLU);
+                    Serial.print("   -> Turning BLUE back on: "); Serial.println(CODICE_BLU);
                     mySwitch.send(CODICE_BLU, BIT_LENGTH); delay(50); 
                 }
                 if (newS) { 
-                    Serial.print("   -> Riaccendo STROBO: "); Serial.println(CODICE_STROBO);
+                    Serial.print("   -> Turning STROBE back on: "); Serial.println(CODICE_STROBO);
                     mySwitch.send(CODICE_STROBO, BIT_LENGTH); delay(50); 
                 }
             } else {
-                // Nessuna luce è stata spenta, controlla solo se ci sono nuove accensioni
+                // No light was turned off, only check if there are new turn-ons
                 if (!rossoAttivo && newR) { 
-                    Serial.print("[DMX CH3] Rosso ON -> Trasmetto RF: "); Serial.println(CODICE_ROSSO);
+                    Serial.print("[DMX CH3] Red ON -> Transmitting RF: "); Serial.println(CODICE_ROSSO);
                     mySwitch.send(CODICE_ROSSO, BIT_LENGTH); delay(50); 
                 }
                 if (!verdeAttivo && newG) { 
-                    Serial.print("[DMX CH4] Verde ON -> Trasmetto RF: "); Serial.println(CODICE_VERDE);
+                    Serial.print("[DMX CH4] Green ON -> Transmitting RF: "); Serial.println(CODICE_VERDE);
                     mySwitch.send(CODICE_VERDE, BIT_LENGTH); delay(50); 
                 }
                 if (!bluAttivo && newB)   { 
-                    Serial.print("[DMX CH5] Blu ON -> Trasmetto RF: "); Serial.println(CODICE_BLU);
+                    Serial.print("[DMX CH5] Blue ON -> Transmitting RF: "); Serial.println(CODICE_BLU);
                     mySwitch.send(CODICE_BLU, BIT_LENGTH); delay(50); 
                 }
                 if (!stroboAttivo && newS) { 
-                    Serial.print("[DMX CH6] Strobo ON -> Trasmetto RF: "); Serial.println(CODICE_STROBO);
+                    Serial.print("[DMX CH6] Strobe ON -> Transmitting RF: "); Serial.println(CODICE_STROBO);
                     mySwitch.send(CODICE_STROBO, BIT_LENGTH); delay(50); 
                 }
             }
 
-            // Aggiorna lo stato in memoria per il ciclo successivo
+            // Update the state in memory for the next cycle
             rossoAttivo = newR;
             verdeAttivo = newG;
             bluAttivo = newB;
@@ -319,14 +319,14 @@ void loop() {
     }
     
     // ==========================================
-    // WATCHDOG DI SICUREZZA
+    // SAFETY WATCHDOG
     // ==========================================
     if (millis() - lastDmxPacketTime > 1000) {
-        digitalWrite(LED_ONBOARD, HIGH); // LED acceso fisso = Assenza DMX
+        digitalWrite(LED_ONBOARD, HIGH); // Solid LED ON = DMX missing
         
         if (fumoAttivo) {
-            Serial.println("!!! ALLARME: Segnale DMX Perso !!! -> Interrompo erogazione FUMO");
-            Serial.print("Trasmetto RF: ");
+            Serial.println("!!! ALARM: DMX Signal Lost !!! -> Stopping SMOKE output");
+            Serial.print("Transmitting RF: ");
             Serial.println(CODICE_FUMO_OFF);
             mySwitch.send(CODICE_FUMO_OFF, BIT_LENGTH);
             fumoAttivo = false;
