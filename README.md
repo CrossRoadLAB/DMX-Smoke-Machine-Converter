@@ -18,17 +18,23 @@ Nato per sopravvivere ai ground loop, agli sbalzi di tensione e alle vibrazioni 
 
 ## 🔌 Bill of Materials (BOM)
 
-| Componente | Quantità | Descrizione / Ruolo |
-| :--- | :--- | :--- |
-| **ESP32-C3 Super Mini** | 1 | Microcontrollore RISC-V con Wi-Fi (Logica principale) |
-| **MAX485 (Modulo TTL)** | 1 | Transceiver RS-485 per la lettura del bus DMX |
-| **6N137** | 1 | Optoisolatore High-Speed per il segnale DATA (Active-LOW) |
-| **B0505S-1W** | 1 | Convertitore DC-DC isolato (ingresso 5V sporchi / uscita 5V puliti) |
-| **Connettore XLR 3-Pin** | 1 | Maschio, da pannello (Ingresso DMX) |
-| **Resistenze** | 4 | 330Ω, 1kΩ, 4.7kΩ (Pull-up), 120Ω (Terminatore) |
-| **Condensatori Ceramici**| 2 | 100nF (0.1µF) per il disaccoppiamento di MAX485 e 6N137 |
-| **Header 2-Pin** | 1 | Per includere o escludere la resistenza da 120Ω (Terminatore) |
-| **Header 3-Pin** | 1 | Per l'interfaccia alla PCB della macchina del fumo (5V, DATA, GND) |
+| Componente | Quantità | Designator | Descrizione / Ruolo |
+| :--- | :---: | :---: | :--- |
+| **ESP32-C3 SuperMini** | 1 | U1 | Microcontrollore RISC-V con Wi-Fi (Logica principale e Web Server) |
+| **MAX3485** | 1 | U3 | Transceiver RS-485 nativo a 3.3V (Lettura bus DMX) |
+| **HT-6N137** | 1 | U4 | Optoisolatore High-Speed (Separazione ottica segnale DATA) |
+| **B0505S-1WL** | 1 | U5 | Convertitore DC-DC isolato (Ingresso 5V sporchi / Uscita 5V puliti isolati) |
+| **CN3903 DC-DC Buck 5V** | 1 | U8 | Modulo convertitore Step-Down (Abbassa i 12V della macchina a 5V) |
+| **Connettore XLR-09W-P 3-Pin** | 1 | U2 | Maschio da PCB (Ingresso segnale DMX) |
+| **JST XH 2-Pin (Passo 2.54mm)** | 1 | U6 | Ingresso alimentazione (12V e GND dalla scheda madre della macchina) |
+| **JST XH 3-Pin (Passo 2.54mm)** | 1 | U7 | Uscita comando verso la macchina del fumo (5V, DATA, GND) |
+| **Resistenza 220Ω** | 1 | R2 | Limitatore di corrente per il LED dell'optoisolatore |
+| **Resistenza 1kΩ** | 1 | R1 | Protezione linea RX dell'ESP32 |
+| **Resistenza 4.7kΩ** | 1 | R3 | Pull-up per la linea DATA (Lato macchina) |
+| **Resistenza 120Ω** | 1 | R4 | Terminazione bus DMX |
+| **Condensatore 100nF (0.1µF)** | 2 | C1, C2 | Condensatori di disaccoppiamento (su MAX3485 e uscita Buck) |
+| **Pin Header 1x2 (Passo 2.54mm)** | 1 | P1 | Header maschio per blocco terminazione DMX |
+| **Jumper Cap (Passo 2.54mm)** | 1 | - | Cappuccio per chiudere il ponticello su P1 (Attiva resistenza 120Ω) |
 
 ---
 
