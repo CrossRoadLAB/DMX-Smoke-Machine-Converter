@@ -43,8 +43,7 @@ Built to survive ground loops, voltage spikes, and extreme vibrations typical of
 The circuit features two strictly separated ground domains: the clean line (ESP32/MAX485) and the dirty line (Smoke machine).
 *P.S. The GND, DATA, and 5V pins must be connected in place of the smoke machine's RF receiver.*
 * Schematic: ![Schematic](docs/Smoke-machine-DMX-Converter.png)
-* PCB Layout/Render: ![PCB Layout top](docs/top.png)
-![PCB Layout bottom](docs/bottom.png)
+* PCB Specification: ![PCB Layout top](docs/specs.png)
 * 3D Model (click the image to view the model): [![Click here to explore the 3D model](docs/poster.png)](https://kroscloud.com/3d/DMX-Smoke-Machine-Converter_Controller/h813?l=1)
 
 ---
