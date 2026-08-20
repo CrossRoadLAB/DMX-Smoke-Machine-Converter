@@ -95,5 +95,8 @@ To sniff the RF remote control codes, I recommend following this project: [Luca 
 ---
 
 ## 🛠️ How to mount on smoke machine
+![](mounting_steps/smoke_machine.jpg)
 
+This is the type of smoke machine I used for the project.
 
+⚠️ It's fondamenttal have the RF remote for sniffing codes and for the modification (reciving module inside the smoke machine) ⚠️
