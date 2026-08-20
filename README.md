@@ -83,4 +83,17 @@ Default WIFI Settings:
 ## 📡 Sniffing the remote control codes
 
 To sniff the RF remote control codes, I recommend following this project: [Luca Bocaletto's Project Link](https://github.com/bocaletto-luca/RF-Sniffer-Replayer)
-* Sniffed Codes: ![](src/SniffedCodes.txt)
+#Sniffed Codes: 
+* Smoke on: 1469186558
+* Smoke off: 1469187068 
+* R: 1469187323
+* G: 1469187578
+* B: 1469187833
+* Light off: 1469195483
+* Strobo: 1469190383
+  
+---
+
+## 🛠️ How to mount on smoke machine
+
+
