@@ -83,3 +83,4 @@ Default WIFI Settings:
 ## 📡 Sniffing the remote control codes
 
 To sniff the RF remote control codes, I recommend following this project: [Luca Bocaletto's Project Link](https://github.com/bocaletto-luca/RF-Sniffer-Replayer)
+* Sniffed Codes: ![](src/SniffedCodes.txt)
